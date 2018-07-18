@@ -45,7 +45,7 @@ var url = dbprotocol+dbhost; //for production environment
 //	var url = 'http://localhost:5984';//for development environment
 //Import database feeds from environment variable
 var db = process.env.feeddbname; //for production environment
-	//var db ='feeds';//for development environment
+//	var db ='feeds_new';//for development environment
 //Import client url to set cors
 
 //var clienturl='localhost:4200';
@@ -126,7 +126,7 @@ request(options, function(err, res, body) {
 				//Get feeds from the newsrack by passing the link as parameter
 					getFeed (link.key[0],function (err, feedItems) {
 						//console.log(err)
-						console.log("klin",link.key[0]);
+						//console.log("klin",link.key[0]);
 						if (!err && feedItems[0]!= undefined && feedItems[feedItems.length-1]!=undefined) {
 								getSortedfeeds(feedItems,function (err,sortedFeeds) {
 										//console.log("sorted",sortedFeeds);
@@ -187,7 +187,7 @@ function getfeedsFromdb(feedname,startkey,endkey,callback) {
 	request(url+'/' + db + '/_design/feeds/_view/feedsondate?startkey=["'+startkey.toISOString()+'"]&endkey=["'+endkey.toISOString()+'"]', function(err, res, body) {
 			//console.log("catte",);
 		if(body != undefined && JSON.parse(body).error!== 'query_parse_error'){
-				console.log("uncategroisedfeeds",body);
+				//console.log("uncategroisedfeeds",body);
 			//callback(undefined,JSON.parse(body).rows);
 
 				var categorisedfeeds = JSON.parse(body).rows.filter(catname=>{
@@ -311,6 +311,7 @@ app.get('/first',cors(),function(req, res) {
 		}
 		if (!err) {
 			console.log ("There are " + feedItems.length + " items in the feed.\n");
+			console.log(feedItems);
 			res.send(feedItems);
 		}
 	});
