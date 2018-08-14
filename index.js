@@ -45,11 +45,11 @@ var url = dbprotocol+dbhost; //for production environment
 //	var url = 'http://localhost:5984';//for development environment
 //Import database feeds from environment variable
 var db = process.env.feeddbname; //for production environment
-	//var db ='feeds_new';//for development environment
+//	var db ='feeds_new';//for development environment
 //Import client url to set cors
 
 //var clienturl='localhost:4200';
-		var clienturl=process.env.clienturl;//for production environment
+	var clienturl=process.env.clienturl;//for production environment
 
 	var clienturlwithprotocol= dbprotocol + clienturl;
 	console.log(clienturlwithprotocol);
@@ -79,7 +79,7 @@ var db = process.env.feeddbname; //for production environment
 var cron = require('cron');
 
 var job1 = new cron.CronJob({
-  cronTime: '00 */30 * * * *',
+  cronTime: '00 */3 * * * *',
   onTick: function() {
   	//console.log('running every minute 1, 2, 4 and 5');
     console.log('job 1 ticked');
@@ -114,6 +114,7 @@ function pullFeedsAndUpdate() {
 						if(feedlink!=undefined){
 							console.log("url",feedlink)
 							getFeed (feedlink,function (err,feedItems,meta) {
+							if(!err){
 								console.log("items before update",meta.categories[0],file.items.length);
 									//console.log(meta.categories[0],file.metadata.categories[0]);
 								if(meta.categories[0]==file.metadata.categories[0]){
@@ -134,6 +135,7 @@ function pullFeedsAndUpdate() {
 										console.log("items after update",meta.categories[0],file.items.length);
 										}
 								}
+							}
 							});
 						}
 				});
