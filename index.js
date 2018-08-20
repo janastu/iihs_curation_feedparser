@@ -94,7 +94,7 @@ var job1 = new cron.CronJob({
 //console.log('job1 status', job1.running); // job1 status undefined
 job1.start();
 console.log('job1 status running', job1.running); // job1 status undefined
-function pullFeedsAndUpdate() {
+function pullFeedsAndUpdate(callback) {
 	fs.readFile('feeds.json', (err, data) => {
 			var cachedFeeds = JSON.parse(data);
 			var feedlink;
@@ -131,8 +131,12 @@ function pullFeedsAndUpdate() {
 												console.error(err);
 												return;
 											};
+												callback(undefined,{'update':true,'category':meta.categories[0]});
 										});
-										console.log("items after update",meta.categories[0],file.items.length);
+										//console.log("items after update",meta.categories[0],file.items.length);
+										}
+										else{
+											callback(undefined,{'update':false,'category':meta.categories[0]});
 										}
 								}
 							}
@@ -331,14 +335,23 @@ app.get('/updatedfeeds',cors(),function(req, res) {
 	fs.readFile('feeds.json', (err, data) => {
 			var cachedFeeds = JSON.parse(data);
 			//res.send(cachedFeeds);
-			//console.log(req.query.user)
+			console.log(req.query.user)
+		//	console.log(req.query.date)
 			cachedFeeds.table.map(file=>{
-
+					//console.log("res",syncStatus);
 				if(file.metadata.categories){
-					//console.log(req.query.user,file.metadata.categories[0]);
+					//console.log(file.metadata.pubdate);
 					if(req.query.user == file.metadata.categories[0]){
-						//console.log(req.query.user)
-					res.send(file);
+
+								var results = file.items.filter(feed=>{
+
+									return feed.pubdate >= req.query.date;
+								})
+								//console.log(results);
+					   res.send(results);
+					}
+					else{
+						res.send
 					}
 					//console.log("contents",file.metadata.categories[0],file.items.length)
 				}
@@ -384,7 +397,7 @@ app.get('/first',cors(),function(req, res) {
 
 			fs.readFile('feeds.json', (err, data) => {
 					if (err) throw err;
-
+					//console.log(data);
 					metadataFeeditems = JSON.parse(data);
 						 metadataFeeditems.table.push({'metadata':meta,'items':feedItems})
 				 		 fs.writeFile('feeds.json', JSON.stringify(metadataFeeditems), (err) => {
