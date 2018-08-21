@@ -117,7 +117,7 @@ function pullFeedsAndUpdate(callback) {
 							if(!err){
 								console.log("items before update",meta.categories[0],file.items.length);
 									//console.log(meta.categories[0],file.metadata.categories[0]);
-								if(meta.categories[0]==file.metadata.categories[0]){
+								if(meta.categories[0]==file.metadata.categories[0] || meta.link == file.metadata.link){
 										var feedstoUpdate = differenceOfFeeds(feedItems,file.items);
 										if(feedstoUpdate.length>0){
 											feedstoUpdate.map(toUpdatefeed=>{
@@ -131,12 +131,12 @@ function pullFeedsAndUpdate(callback) {
 												console.error(err);
 												return;
 											};
-												callback(undefined,{'update':true,'category':meta.categories[0]});
+												callback(undefined,{'update':true,'category':meta.categories[0] || meta.title});
 										});
 										//console.log("items after update",meta.categories[0],file.items.length);
 										}
 										else{
-											callback(undefined,{'update':false,'category':meta.categories[0]});
+											callback(undefined,{'update':false,'category':meta.categories[0] || meta.title});
 										}
 								}
 							}
@@ -335,12 +335,25 @@ app.get('/updatedfeeds',cors(),function(req, res) {
 	fs.readFile('feeds.json', (err, data) => {
 			var cachedFeeds = JSON.parse(data);
 			//res.send(cachedFeeds);
-			console.log(req.query.user)
+			//console.log(req.query.user)
 		//	console.log(req.query.date)
 			cachedFeeds.table.map(file=>{
 					//console.log("res",syncStatus);
 				if(file.metadata.categories){
-					//console.log(file.metadata.pubdate);
+
+					if(file.metadata.categories[0] == undefined){
+							//console.log(req.query.user,file.metadata.title);
+						if(req.query.user == file.metadata.link){
+								//console.log(file.metadata);
+									var results = file.items.filter(feed=>{
+
+										return feed.pubdate >= req.query.date;
+									})
+									//console.log(results);
+							 res.send(results);
+						}
+					}
+					else{
 					if(req.query.user == file.metadata.categories[0]){
 
 								var results = file.items.filter(feed=>{
@@ -350,9 +363,7 @@ app.get('/updatedfeeds',cors(),function(req, res) {
 								//console.log(results);
 					   res.send(results);
 					}
-					else{
-						res.send
-					}
+				}
 					//console.log("contents",file.metadata.categories[0],file.items.length)
 				}
 
@@ -409,7 +420,7 @@ app.get('/first',cors(),function(req, res) {
 							//console.log(metadataFeeditems);
 						metadataFeeditems.table.map(file=>{
 							if(file.metadata.categories){
-								if(meta.categories[0] == file.metadata.categories[0]){
+								if(meta.categories[0] == file.metadata.categories[0] || meta.title == file.metadata.title){
 								res.send(file);
 								}
 								console.log("contents",file.metadata.categories[0],file.items.length)
