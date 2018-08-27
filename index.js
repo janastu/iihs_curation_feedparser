@@ -79,7 +79,7 @@ var db = process.env.feeddbname; //for production environment
 var cron = require('cron');
 
 var job1 = new cron.CronJob({
-  cronTime: '00 */3 * * * *',
+  cronTime: '00 */30 * * * *',
   onTick: function() {
   	//console.log('running every minute 1, 2, 4 and 5');
     console.log('job 1 ticked');
@@ -116,16 +116,16 @@ function pullFeedsAndUpdate(callback) {
 							getFeed (feedlink,function (err,feedItems,meta) {
 							if(!err){
 								console.log("items before update",meta.categories[0],file.items.length);
-									console.log(meta.categories[0],file.metadata.categories[0]);
+									//console.log(meta.categories[0],file.metadata.categories[0]);
 								if(meta.categories[0]==file.metadata.categories[0]){
 										var feedstoUpdate = differenceOfFeeds(feedItems,file.items);
 										if(feedstoUpdate.length>0){
 											feedstoUpdate.map(toUpdatefeed=>{
 												file.items.push(toUpdatefeed);
-													console.log("items after update",meta.categories[0],file.items.length);
+
 
 											})
-
+											console.log("items after update",meta.categories[0],file.items.length);
 											fs.writeFile('feeds.json', JSON.stringify(cachedFeeds), (err) => {
 											if (err) {
 												console.error(err);
