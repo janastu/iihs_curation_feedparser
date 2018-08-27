@@ -84,7 +84,7 @@ var job1 = new cron.CronJob({
   	//console.log('running every minute 1, 2, 4 and 5');
     console.log('job 1 ticked');
     	pullFeedsAndUpdate(function(err,response){
-    		console.log('Response updated',response);
+    		//console.log('Response updated',response);
     	});
 
     },
@@ -116,13 +116,13 @@ function pullFeedsAndUpdate(callback) {
 							getFeed (feedlink,function (err,feedItems,meta) {
 							if(!err){
 								console.log("items before update",meta.categories[0],file.items.length);
-									//console.log(meta.categories[0],file.metadata.categories[0]);
-								if(meta.categories[0]==file.metadata.categories[0] || meta.link == file.metadata.link){
+									console.log(meta.categories[0],file.metadata.categories[0]);
+								if(meta.categories[0]==file.metadata.categories[0]){
 										var feedstoUpdate = differenceOfFeeds(feedItems,file.items);
 										if(feedstoUpdate.length>0){
 											feedstoUpdate.map(toUpdatefeed=>{
 												file.items.push(toUpdatefeed);
-													//console.log("items after update",meta.categories[0],file.items.length);
+													console.log("items after update",meta.categories[0],file.items.length);
 
 											})
 
@@ -131,12 +131,13 @@ function pullFeedsAndUpdate(callback) {
 												console.error(err);
 												return;
 											};
-												callback(undefined,{'update':true,'category':meta.categories[0] || meta.title});
+											res.send(cachedFeeds);
+												//callback(undefined,{'update':true,'category':meta.categories[0] || meta.title});
 										});
 										//console.log("items after update",meta.categories[0],file.items.length);
 										}
 										else{
-											callback(undefined,{'update':false,'category':meta.categories[0] || meta.title});
+											//callback(undefined,{'update':false,'category':meta.categories[0] || meta.title});
 										}
 								}
 							}
@@ -328,6 +329,7 @@ app.use(function(req, res, next) {
   res.header('Access-Control-Allow-Credentials', true);
   return next();
 });
+
 //Pull new feeds from newsrack
 app.get('/updatedfeeds',cors(),function(req, res) {
 
