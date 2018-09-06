@@ -36,7 +36,7 @@ var dbhost=process.env.dbhost;
 //Import database port like 5984 for couchdb in local (localhost:5984)
 var dbport=process.env.dbPort;
 //Import database username and password from the environment
-var dbusername = process.env.dbuser; //for production environment
+//var dbusername = process.env.dbuser; //for production environment
 //var dbusername = 'admin';//for development environment
 var dbpassword = process.env.dbpassword; //for production environment
 //var dbpassword = 'admin';//for development environment
@@ -79,7 +79,7 @@ var db = process.env.feeddbname; //for production environment
 var cron = require('cron');
 
 var job1 = new cron.CronJob({
-  cronTime: '00 */30 * * * *',
+  cronTime: '00 */3 * * * *',
   onTick: function() {
   	//console.log('running every minute 1, 2, 4 and 5');
     console.log('job 1 ticked');
@@ -95,6 +95,7 @@ var job1 = new cron.CronJob({
 job1.start();
 console.log('job1 status running', job1.running); // job1 status undefined
 function pullFeedsAndUpdate(callback) {
+	var feedstoUpdate;
 	fs.readFile('feeds.json', (err, data) => {
 			var cachedFeeds = JSON.parse(data);
 			var feedlink;
@@ -115,31 +116,48 @@ function pullFeedsAndUpdate(callback) {
 							console.log("url",feedlink)
 							getFeed (feedlink,function (err,feedItems,meta) {
 							if(!err){
-								console.log("items before update",meta.categories[0],file.items.length);
+								console.log("items before update",meta.categories,file.items.length);
+								if(meta.categories == undefined){
+									//console.log("items",meta,file.metadata);
+									if(meta.link==file.metadata.link){
+											feedstoUpdate = differenceOfFeeds(feedItems,file.items);
+											//console.log(feedstoUpdate);
+											if(feedstoUpdate.length>0){
+												feedstoUpdate.map(toUpdatefeed=>{
+													file.items.push(toUpdatefeed);
+												})
+
+											//console.log("items after update",meta.categories[0],file.items.length);
+											}
+
+
+									}
+								}
+								else{
 									//console.log(meta.categories[0],file.metadata.categories[0]);
 								if(meta.categories[0]==file.metadata.categories[0]){
-										var feedstoUpdate = differenceOfFeeds(feedItems,file.items);
+										feedstoUpdate = differenceOfFeeds(feedItems,file.items);
+										//console.log(feedstoUpdate);
 										if(feedstoUpdate.length>0){
 											feedstoUpdate.map(toUpdatefeed=>{
 												file.items.push(toUpdatefeed);
-
-
 											})
-											console.log("items after update",meta.categories[0],file.items.length);
-											fs.writeFile('feeds.json', JSON.stringify(cachedFeeds), (err) => {
-											if (err) {
-												console.error(err);
-												return;
-											};
-											res.send(cachedFeeds);
-												//callback(undefined,{'update':true,'category':meta.categories[0] || meta.title});
-										});
+
 										//console.log("items after update",meta.categories[0],file.items.length);
 										}
-										else{
-											//callback(undefined,{'update':false,'category':meta.categories[0] || meta.title});
-										}
+
+									}
 								}
+
+								console.log("items after update",meta.categories,file.items.length);
+								fs.writeFile('feeds.json', JSON.stringify(cachedFeeds), (err) => {
+								if (err) {
+									console.error(err);
+									return;
+								};
+								//res.send(cachedFeeds);
+									//callback(undefined,{'update':true,'category':meta.categories[0] || meta.title});
+							});
 							}
 							});
 						}
@@ -345,24 +363,24 @@ app.get('/updatedfeeds',cors(),function(req, res) {
 
 					if(file.metadata.categories[0] == undefined){
 							//console.log(req.query.user,file.metadata.title);
-						if(req.query.user == file.metadata.link){
+						if(req.query.channel == file.metadata.link){
 								//console.log(file.metadata);
 									var results = file.items.filter(feed=>{
 
 										return feed.pubdate >= req.query.date;
 									})
-									//console.log(results);
+								//	console.log("undefe",results.length);
 							 res.send(results);
 						}
 					}
 					else{
-					if(req.query.user == file.metadata.categories[0]){
+					if(req.query.channel == file.metadata.categories[0]){
 
 								var results = file.items.filter(feed=>{
 
 									return feed.pubdate >= req.query.date;
 								})
-								//console.log(results);
+								//console.log("cat",results.length);
 					   res.send(results);
 					}
 				}
@@ -422,7 +440,7 @@ app.get('/first',cors(),function(req, res) {
 							//console.log(metadataFeeditems);
 						metadataFeeditems.table.map(file=>{
 							if(file.metadata.categories){
-								if(meta.categories[0] == file.metadata.categories[0] || meta.title == file.metadata.title){
+								if(meta.categories[0] == file.metadata.categories[0]){
 								res.send(file);
 								}
 								console.log("contents",file.metadata.categories[0],file.items.length)
