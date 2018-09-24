@@ -36,13 +36,13 @@ var dbhost=process.env.dbhost;
 //Import database port like 5984 for couchdb in local (localhost:5984)
 var dbport=process.env.dbPort;
 //Import database username and password from the environment
-//var dbusername = process.env.dbuser; //for production environment
+var dbusername = process.env.dbuser; //for production environment
 //var dbusername = 'admin';//for development environment
 var dbpassword = process.env.dbpassword; //for production environment
 //var dbpassword = 'admin';//for development environment
 //The complete url of database host with protocol
 var url = dbprotocol+dbhost; //for production environment
-//	var url = 'http://localhost:5984';//for development environment
+//var url = 'http://localhost:5984';//for development environment
 //Import database feeds from environment variable
 var db = process.env.feeddbname; //for production environment
 //	var db ='feeds_new';//for development environment
@@ -355,7 +355,7 @@ app.get('/updatedfeeds',cors(),function(req, res) {
 	fs.readFile('feeds.json', (err, data) => {
 			var cachedFeeds = JSON.parse(data);
 			//res.send(cachedFeeds);
-			//console.log(req.query.user)
+			//
 		//	console.log(req.query.date)
 			cachedFeeds.table.map(file=>{
 					//console.log("res",syncStatus);
@@ -380,7 +380,7 @@ app.get('/updatedfeeds',cors(),function(req, res) {
 
 									return feed.pubdate >= req.query.date;
 								})
-								//console.log("cat",results.length);
+								console.log("cat",results.length);
 					   res.send(results);
 					}
 				}
