@@ -331,13 +331,14 @@ function differenceOfFeeds(feedsarray,feedItems) {
 
 }
 //cors settings
+//app.use(cors());
 app.use(function(req, res, next) {
   //var allowedOrigins = ['http://127.0.0.1:8020', 'http://localhost:8020', 'http://127.0.0.1:9000', 'http://localhost:9000'];
- 	console.log(clienturlwithprotocol, "client url with protocol");
+ 	console.log(clienturlwithprotocol, req.headers.origin, "client url with protocol");
    var allowedOrigins=clienturlwithprotocol;
   var origin = req.headers.origin;
-  if(allowedOrigins){
-       res.setHeader('Access-Control-Allow-Origin', origin);
+  if(allowedOrigins === origin){
+       res.setHeader('Access-Control-Allow-Origin', allowedOrigins);
   }
   //res.header('Access-Control-Allow-Origin', 'http://127.0.0.1:8020');
   res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
