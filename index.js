@@ -441,10 +441,11 @@ app.get('/first',cors(),function(req, res) {
 							//console.log(metadataFeeditems);
 						metadataFeeditems.table.map(file=>{
 							if(file.metadata.categories){
+								console.log("contents",file.metadata.categories[0],file.items.length)
 								if(meta.categories[0] == file.metadata.categories[0]){
 								res.send(file);
 								}
-								console.log("contents",file.metadata.categories[0],file.items.length)
+								
 							}
 
 						})
