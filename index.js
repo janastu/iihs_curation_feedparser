@@ -333,10 +333,10 @@ function differenceOfFeeds(feedsarray,feedItems) {
 //cors settings
 app.use(function(req, res, next) {
   //var allowedOrigins = ['http://127.0.0.1:8020', 'http://localhost:8020', 'http://127.0.0.1:9000', 'http://localhost:9000'];
- 	//console.log(clienturlwithprotocol);
+ 	console.log(clienturlwithprotocol, "client url with protocol");
    var allowedOrigins=clienturlwithprotocol;
   var origin = req.headers.origin;
-  if(allowedOrigins.indexOf(origin) > -1){
+  if(allowedOrigins){
        res.setHeader('Access-Control-Allow-Origin', origin);
   }
   //res.header('Access-Control-Allow-Origin', 'http://127.0.0.1:8020');
