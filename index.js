@@ -104,7 +104,7 @@ function pullFeedsAndUpdate(callback) {
 
 						if(file.metadata.title){
 							//console.log("".file.)
-							if(file.metadata.xmlurl == null){
+							if(!file.metadata.xmlurl){
 								feedlink=file.metadata.link;
 							}
 							else {
@@ -112,12 +112,12 @@ function pullFeedsAndUpdate(callback) {
 							}
 						}
 
-						if(feedlink!=undefined){
+						if(feedlink){
 							console.log("url",feedlink)
 							getFeed (feedlink,function (err,feedItems,meta) {
 							if(!err){
 								console.log("items before update",meta.categories,file.items.length);
-								if(meta.categories == undefined){
+								if(meta.categories.length === 0){
 									//console.log("items",meta,file.metadata);
 									if(meta.link==file.metadata.link){
 											feedstoUpdate = differenceOfFeeds(feedItems,file.items);
@@ -150,7 +150,7 @@ function pullFeedsAndUpdate(callback) {
 								}
 
 								console.log("items after update",meta.categories,file.items.length);
-								fs.writeFile('feeds.json', JSON.stringify(cachedFeeds), (err) => {
+								fs.writeFile('feeds.json', JSON.stringify(cachedFeeds, null, 4), (err) => {
 								if (err) {
 									console.error(err);
 									return;
@@ -358,11 +358,11 @@ app.get('/updatedfeeds',cors(),function(req, res) {
 			//res.send(cachedFeeds);
 			//
 		//	console.log(req.query.date)
-			cachedFeeds.table.map(file=>{
+			cachedFeeds.table.map(file=>{ //for each fileitem
 					//console.log("res",syncStatus);
 				if(file.metadata.categories){
 
-					if(file.metadata.categories[0] == undefined){
+					if(file.metadata.categories.length === 0){
 							//console.log(req.query.user,file.metadata.title);
 						if(req.query.channel == file.metadata.link){
 								//console.log(file.metadata);
@@ -387,8 +387,18 @@ app.get('/updatedfeeds',cors(),function(req, res) {
 				}
 					//console.log("contents",file.metadata.categories[0],file.items.length)
 				}
+				
+				// reset data.items
+				file.items = []; 
 
-			})
+			});
+				 		 fs.writeFile('feeds.json', JSON.stringify(cachedFeeds,null,1), (err) => {
+			 				if (err) {
+			 					console.error(err);
+			 					return;
+			 				};
+						});
+		
 	})
 	/*getUsersSubscriptionsLinks(function(err,response){
 		console.log(response);
@@ -432,7 +442,7 @@ app.get('/first',cors(),function(req, res) {
 					//console.log(data);
 					metadataFeeditems = JSON.parse(data);
 						 metadataFeeditems.table.push({'metadata':meta,'items':feedItems})
-				 		 fs.writeFile('feeds.json', JSON.stringify(metadataFeeditems), (err) => {
+				 		 fs.writeFile('feeds.json', JSON.stringify(metadataFeeditems,null,1), (err) => {
 			 				if (err) {
 			 					console.error(err);
 			 					return;
