@@ -96,6 +96,7 @@ job1.start();
 console.log('job1 status running', job1.running); // job1 status undefined
 function pullFeedsAndUpdate(callback) {
 	var feedstoUpdate;
+	console.log(new Date)
 	fs.readFileSync('feeds.json', "utf8", (err, data) => {
 			var cachedFeeds = JSON.parse(data);
 			var feedlink;
@@ -169,6 +170,8 @@ function pullFeedsAndUpdate(callback) {
 
 
 	});
+
+	console.log(new Date);
 }
 
 
