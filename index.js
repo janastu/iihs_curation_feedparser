@@ -96,7 +96,7 @@ job1.start();
 console.log('job1 status running', job1.running); // job1 status undefined
 function pullFeedsAndUpdate(callback) {
 	var feedstoUpdate;
-	fs.readFile('feeds.json', (err, data) => {
+	fs.readFileSync('feeds.json', (err, data) => {
 			var cachedFeeds = JSON.parse(data);
 			var feedlink;
 			//console.log(cachedFeeds)
@@ -357,7 +357,7 @@ app.use(function(req, res, next) {
 app.get('/updatedfeeds',cors(),function(req, res) {
 
 	var syncStatus;
-	fs.readFile('feeds.json', (err, data) => {
+	fs.readFileSync('feeds.json', (err, data) => {
 			var cachedFeeds = JSON.parse(data);
 			console.log(cachedFeeds);
 			//res.send(cachedFeeds);
@@ -450,7 +450,7 @@ app.get('/first',cors(),function(req, res) {
 
 			//
 
-			fs.readFile('feeds.json', (err, data) => {
+			fs.readFileSync('feeds.json', (err, data) => {
 					if (err) throw err;
 					//console.log(data);
 					metadataFeeditems = JSON.parse(data);
