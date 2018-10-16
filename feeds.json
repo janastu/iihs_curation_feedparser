@@ -1,16 +1,8 @@
 {
 	"table": [{
-			"metadata": "metadata",
-					"items": "items"
-						}, {
-								"metadata": {"categories":[]},"items":[]}
-								        ]
-									{
-										"table": [{
-												"metadata": "metadata",
-														"items": "items"
-															}, {
-																	"metadata": {"categories":[]},"items":[]}
-																	        ]
-																		}
-																		}
+		"metadata": "metadata",
+		"items": "items"
+	}, {
+		"metadata": {"categories":[]},"items":[]}
+        ]
+}
