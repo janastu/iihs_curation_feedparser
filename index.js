@@ -393,7 +393,10 @@ app.get('/updatedfeeds',cors(),function(req, res) {
 				}
 				
 				// reset data.items
-				file.items = []; 
+				if(file.items.length > 20){
+					file.items = file.items.slice(file.items.length-19, file.items.length);
+				}
+				
 
 			});
 				 		 fs.writeFile('feeds.json', JSON.stringify(cachedFeeds,null,1), (err) => {
