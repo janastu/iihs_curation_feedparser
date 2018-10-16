@@ -344,6 +344,7 @@ app.use(function(req, res, next) {
        res.setHeader('Access-Control-Allow-Origin', allowedOrigins);
   }*/
   res.setHeader('Access-Control-Allow-Origin', allowedOrigins);
+  res.setHeader('Access-Control-Allow-Origin', allowedOrigins);
   //res.header('Access-Control-Allow-Origin', 'http://127.0.0.1:8020');
   res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.header('Access-Control-Allow-Methods', 'POST');
