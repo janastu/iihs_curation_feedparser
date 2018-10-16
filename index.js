@@ -151,7 +151,7 @@ function pullFeedsAndUpdate(callback) {
 
 								console.log("items after update",meta.categories,file.items.length);
 
-								fs.writeFileSync('feeds.json', JSON.stringify(cachedFeeds, null, 4), (err) => {
+								fs.writeFileSync('feeds.json', JSON.stringify(cachedFeeds, null, 4), 'utf8', (err) => {
 
 								if (err) {
 									console.error(err);
@@ -405,7 +405,7 @@ app.get('/updatedfeeds',cors(),function(req, res) {
 				
 
 			});
-				 		 fs.writeFileSync('feeds.json', JSON.stringify(cachedFeeds,null,1), (err) => {
+				 		 fs.writeFileSync('feeds.json', JSON.stringify(cachedFeeds,null,1), 'utf8', (err) => {
 			 				if (err) {
 			 					console.error(err);
 			 					return;
@@ -455,7 +455,7 @@ app.get('/first',cors(),function(req, res) {
 					//console.log(data);
 					metadataFeeditems = JSON.parse(data);
 						 metadataFeeditems.table.push({'metadata':meta,'items':feedItems})
-				 		 fs.writeFileSync('feeds.json', JSON.stringify(metadataFeeditems,null,1), (err) => {
+				 		 fs.writeFileSync('feeds.json', JSON.stringify(metadataFeeditems,null,1), 'utf8', (err) => {
 			 				if (err) {
 			 					console.error(err);
 			 					return;
