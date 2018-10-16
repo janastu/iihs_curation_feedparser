@@ -2,7 +2,12 @@
 	"table": [{
 		"metadata": "metadata",
 		"items": "items"
-	}, {
-		"metadata": {"categories":[]},"items":[]}
+	}, 
+	{
+		"metadata": {
+			"categories":[]
+			},
+			"items":[]
+	}
         ]
 }
