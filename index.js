@@ -171,7 +171,7 @@ function pullFeedsAndUpdate(callback) {
 
 	});
 
-	console.log(new Date - startDate);
+	console.log((new Date).getTime() - startDate.getTime());
 }
 
 
@@ -418,7 +418,7 @@ app.get('/updatedfeeds',cors(),function(req, res) {
 						});
 		
 	});
-	console.log(new Date - startDate);
+	console.log((new Date).getTime() - startDate.getTime());
 	/*getUsersSubscriptionsLinks(function(err,response){
 		console.log(response);
 
@@ -482,7 +482,7 @@ app.get('/first',cors(),function(req, res) {
 				});
 			});
 
-			console.log(new Date - startDate);
+			console.log((new Date).getTime()- startDate.getTime());
 
 				//console.log(feedItems.categories);
 
