@@ -157,6 +157,7 @@ function pullFeedsAndUpdate(callback) {
 									console.error(err);
 									return;
 								};
+								return;
 								//res.send(cachedFeeds);
 									//callback(undefined,{'update':true,'category':meta.categories[0] || meta.title});
 							});
