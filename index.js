@@ -51,7 +51,7 @@ var db = process.env.feeddbname; //for production environment
 //var clienturl='localhost:4200';
 	var clienturl=process.env.clienturl;//for production environment
 
-	var clienturlwithprotocol= dbprotocol + clienturl;
+	var clienturlwithprotocol= '*'; //dbprotocol + clienturl;
 	console.log(clienturlwithprotocol);
 
 /*  The MIT License (MIT)
@@ -150,12 +150,12 @@ function pullFeedsAndUpdate(callback) {
 								}
 
 								console.log("items after update",meta.categories,file.items.length);
-								fs.writeFile('feeds.json', JSON.stringify(cachedFeeds), (err) => {
+								fs.writeFile('feeds.json', JSON.stringify(cachedFeeds), (err) => { 
 								if (err) {
 									console.error(err);
 									return;
 								};
-								//res.send(cachedFeeds);
+								res.send(cachedFeeds);
 									//callback(undefined,{'update':true,'category':meta.categories[0] || meta.title});
 							});
 							}
@@ -320,7 +320,7 @@ function updateDB(data,feedname,callback){
 function differenceOfFeeds(feedsarray,feedItems) {
 		console.log("feedarr length",feedsarray.length,feedItems.length);
 
-
+// possible bug
 	var res = _.differenceBy(feedsarray,feedItems,'title');
 		console.log("result",res.length)
 
@@ -337,9 +337,10 @@ app.use(function(req, res, next) {
  	console.log(clienturlwithprotocol, req.headers.origin, "client url with protocol");
    var allowedOrigins=clienturlwithprotocol;
   var origin = req.headers.origin;
-  if(allowedOrigins === origin){
+  /*if(allowedOrigins === origin){
        res.setHeader('Access-Control-Allow-Origin', allowedOrigins);
-  }
+  }*/
+  res.setHeader('Access-Control-Allow-Origin', allowedOrigins);
   //res.header('Access-Control-Allow-Origin', 'http://127.0.0.1:8020');
   res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.header('Access-Control-Allow-Methods', 'POST');
@@ -355,6 +356,7 @@ app.get('/updatedfeeds',cors(),function(req, res) {
 	var syncStatus;
 	fs.readFile('feeds.json', (err, data) => {
 			var cachedFeeds = JSON.parse(data);
+			console.log(cachedFeeds);
 			//res.send(cachedFeeds);
 			//
 		//	console.log(req.query.date)
