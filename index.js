@@ -96,7 +96,7 @@ job1.start();
 console.log('job1 status running', job1.running); // job1 status undefined
 function pullFeedsAndUpdate(callback) {
 	var feedstoUpdate;
-	console.log(new Date)
+	var startDate = new Date;
 	fs.readFileSync('feeds.json', "utf8", (err, data) => {
 			var cachedFeeds = JSON.parse(data);
 			var feedlink;
@@ -171,7 +171,7 @@ function pullFeedsAndUpdate(callback) {
 
 	});
 
-	console.log(new Date);
+	console.log(new Date - startDate);
 }
 
 
@@ -361,6 +361,7 @@ app.use(function(req, res, next) {
 app.get('/updatedfeeds',cors(),function(req, res) {
 
 	var syncStatus;
+	var startDate = new Date;
 	fs.readFileSync('feeds.json', "utf8", (err, data) => {
 			var cachedFeeds = JSON.parse(data);
 			console.log(cachedFeeds);
@@ -416,7 +417,8 @@ app.get('/updatedfeeds',cors(),function(req, res) {
 			 				};
 						});
 		
-	})
+	});
+	console.log(new Date - startDate);
 	/*getUsersSubscriptionsLinks(function(err,response){
 		console.log(response);
 
@@ -453,7 +455,8 @@ app.get('/first',cors(),function(req, res) {
 			//console.log(feedItems.length);
 
 			//
-
+			var startDate = new Date;
+			
 			fs.readFileSync('feeds.json', "utf8", (err, data) => {
 					if (err) throw err;
 					//console.log(data);
@@ -479,7 +482,7 @@ app.get('/first',cors(),function(req, res) {
 				});
 			});
 
-
+			console.log(new Date - startDate);
 
 				//console.log(feedItems.categories);
 
