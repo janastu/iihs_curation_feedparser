@@ -375,7 +375,10 @@ app.get('/updatedfeeds',cors(),function(req, res) {
 										return feed.pubdate >= req.query.date;
 									})
 								//	console.log("undefe",results.length);
+								//reset the items array
+								file.items=[];
 							 res.send(results);
+
 						}
 					}
 					else{
@@ -387,15 +390,17 @@ app.get('/updatedfeeds',cors(),function(req, res) {
 								})
 								console.log("cat",results.length);
 					   res.send(results);
+					   //reset the items array
+					   file.items=[];
 					}
 				}
 					//console.log("contents",file.metadata.categories[0],file.items.length)
 				}
 				
 				// reset data.items
-				if(file.items.length > 20){
+				/*if(file.items.length > 20){
 					file.items = file.items.slice(file.items.length-19, file.items.length);
-				}
+				}*/
 				
 
 			});
