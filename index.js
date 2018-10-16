@@ -79,7 +79,7 @@ var db = process.env.feeddbname; //for production environment
 var cron = require('cron');
 
 var job1 = new cron.CronJob({
-  cronTime: '*/5 * * * * *',
+  cronTime: '* */6 * * * *',
   onTick: function() {
   	//console.log('running every minute 1, 2, 4 and 5');
     console.log('job 1 ticked');
