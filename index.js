@@ -155,7 +155,7 @@ function pullFeedsAndUpdate(callback) {
 
 								if (err) {
 									console.error(err);
-									return;
+								
 								};
 								return;
 								//res.send(cachedFeeds);
