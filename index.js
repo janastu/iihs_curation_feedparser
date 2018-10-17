@@ -350,7 +350,7 @@ function writeToFile(filename, payload){
 				console.error(err);
 				reject(err);
 			} else {
-				resolve(data);
+				resolve(payload);
 			}
 		});
 	});
