@@ -97,75 +97,81 @@ console.log('job1 status running', job1.running); // job1 status undefined
 function pullFeedsAndUpdate(callback) {
 	var feedstoUpdate;
 	var startDate = new Date;
-	fs.readFileSync('feeds.json', "utf8", (err, data) => {
-			var cachedFeeds = JSON.parse(data);
-			var feedlink;
-			//console.log(cachedFeeds)
-				cachedFeeds.table.map(file=>{
+	fs.readFile('feeds.json', "utf8", (err, data) => {
+	var cachedFeeds = JSON.parse(data);
+	var feedlink;
+	//console.log(cachedFeeds)
+		cachedFeeds.table.map(file=>{
 
-						if(file.metadata.title){
-							//console.log("".file.)
-							if(!file.metadata.xmlurl){
-								feedlink=file.metadata.link;
+				if(file.metadata.title){
+					//console.log("".file.)
+					if(!file.metadata.xmlurl){
+						feedlink=file.metadata.link;
+					}
+					else {
+						feedlink=file.metadata.xmlurl;
+					}
+				}
+
+				if(feedlink){
+					console.log("url",feedlink)
+					getFeed (feedlink,function (err,feedItems,meta) {
+					if(!err){
+						console.log("items before update",meta.categories,file.items.length);
+						if(meta.categories.length === 0){
+							//console.log("items",meta,file.metadata);
+							if(meta.link==file.metadata.link){
+									feedstoUpdate = differenceOfFeeds(feedItems,file.items);
+									//console.log(feedstoUpdate);
+									if(feedstoUpdate.length>0){
+										feedstoUpdate.map(toUpdatefeed=>{
+											file.items.push(toUpdatefeed);
+										})
+
+									//console.log("items after update",meta.categories[0],file.items.length);
+									}
+
+
 							}
-							else {
-								feedlink=file.metadata.xmlurl;
+						}
+						else{
+							//console.log(meta.categories[0],file.metadata.categories[0]);
+						if(meta.categories[0]==file.metadata.categories[0]){
+								feedstoUpdate = differenceOfFeeds(feedItems,file.items);
+								//console.log(feedstoUpdate);
+								if(feedstoUpdate.length>0){
+									feedstoUpdate.map(toUpdatefeed=>{
+										file.items.push(toUpdatefeed);
+									})
+
+								//console.log("items after update",meta.categories[0],file.items.length);
+								}
+
 							}
 						}
 
-						if(feedlink){
-							console.log("url",feedlink)
-							getFeed (feedlink,function (err,feedItems,meta) {
-							if(!err){
-								console.log("items before update",meta.categories,file.items.length);
-								if(meta.categories.length === 0){
-									//console.log("items",meta,file.metadata);
-									if(meta.link==file.metadata.link){
-											feedstoUpdate = differenceOfFeeds(feedItems,file.items);
-											//console.log(feedstoUpdate);
-											if(feedstoUpdate.length>0){
-												feedstoUpdate.map(toUpdatefeed=>{
-													file.items.push(toUpdatefeed);
-												})
+						console.log("items after update",meta.categories,file.items.length);
+						writeToFile('feeds.json', JSON.stringify(cachedFeeds,null,1))
+									.then(function(result){
+										console.log("finished writing "+ (new Date).getTime() - startDate.getTime())
 
-											//console.log("items after update",meta.categories[0],file.items.length);
-											}
+									}).catch(function(err){
+										console.log("error here: " + err);
+									})
+						/*fs.writeFile('feeds.json', JSON.stringify(cachedFeeds, null, 4), 'utf8', (err) => {
 
-
-									}
-								}
-								else{
-									//console.log(meta.categories[0],file.metadata.categories[0]);
-								if(meta.categories[0]==file.metadata.categories[0]){
-										feedstoUpdate = differenceOfFeeds(feedItems,file.items);
-										//console.log(feedstoUpdate);
-										if(feedstoUpdate.length>0){
-											feedstoUpdate.map(toUpdatefeed=>{
-												file.items.push(toUpdatefeed);
-											})
-
-										//console.log("items after update",meta.categories[0],file.items.length);
-										}
-
-									}
-								}
-
-								console.log("items after update",meta.categories,file.items.length);
-
-								fs.writeFileSync('feeds.json', JSON.stringify(cachedFeeds, null, 4), 'utf8', (err) => {
-
-								if (err) {
-									console.error(err);
-								
-								};
-								return;
-								//res.send(cachedFeeds);
-									//callback(undefined,{'update':true,'category':meta.categories[0] || meta.title});
-							});
-							}
-							});
-						}
-				});
+						if (err) {
+							console.error(err);
+						
+						};
+						return;
+						//res.send(cachedFeeds);
+							//callback(undefined,{'update':true,'category':meta.categories[0] || meta.title});
+					});*/
+					}
+					});
+				}
+		});
 
 
 
@@ -336,6 +342,19 @@ function differenceOfFeeds(feedsarray,feedItems) {
 
 
 }
+
+function writeToFile(filename, payload){
+	return new Promise(function(resolve, reject) {
+		 fs.writeFile(filename, payload, 'utf8', (err) => {
+			if (err) {
+				console.error(err);
+				reject(err);
+			} else {
+				resolve(data);
+			}
+		});
+	});
+}
 //cors settings
 //app.use(cors());
 app.use(function(req, res, next) {
@@ -362,7 +381,7 @@ app.get('/updatedfeeds',cors(),function(req, res) {
 
 	var syncStatus;
 	var startDate = new Date;
-	fs.readFileSync('feeds.json', "utf8", (err, data) => {
+	fs.readFile('feeds.json', "utf8", (err, data) => {
 			var cachedFeeds = JSON.parse(data);
 			console.log(cachedFeeds);
 			//res.send(cachedFeeds);
@@ -410,12 +429,21 @@ app.get('/updatedfeeds',cors(),function(req, res) {
 				
 
 			});
-				 		 fs.writeFileSync('feeds.json', JSON.stringify(cachedFeeds,null,1), 'utf8', (err) => {
-			 				if (err) {
-			 					console.error(err);
-			 					return;
-			 				};
-						});
+			
+			writeToFile('feeds.json', JSON.stringify(cachedFeeds,null,1))
+						.then(function(result){
+							console.log("finished writing "+ (new Date).getTime() - startDate.getTime())
+
+						}).catch(function(err){
+							console.log("error here: " + err);
+						})
+
+	 		/* fs.writeFile('feeds.json', JSON.stringify(cachedFeeds,null,1), 'utf8', (err) => {
+ 				if (err) {
+ 					console.error(err);
+ 					return;
+ 				};
+			});*/
 		
 	});
 	console.log((new Date).getTime() - startDate.getTime());
@@ -457,17 +485,25 @@ app.get('/first',cors(),function(req, res) {
 			//
 			var startDate = new Date;
 			
-			fs.readFileSync('feeds.json', "utf8", (err, data) => {
+			fs.readFile('feeds.json', "utf8", (err, data) => {
 					if (err) throw err;
 					//console.log(data);
 					metadataFeeditems = JSON.parse(data);
 						 metadataFeeditems.table.push({'metadata':meta,'items':feedItems})
-				 		 fs.writeFileSync('feeds.json', JSON.stringify(metadataFeeditems,null,1), 'utf8', (err) => {
+
+						 writeToFile('feeds.json', JSON.stringify(metadataFeeditems,null,1))
+						 			.then(function(result){
+						 				console.log("finished writing "+ (new Date).getTime() - startDate.getTime())
+
+						 			}).catch(function(err){
+						 				console.log("error here: " + err);
+						 			})
+				 		/* fs.writeFile('feeds.json', JSON.stringify(metadataFeeditems,null,1), 'utf8', (err) => {
 			 				if (err) {
 			 					console.error(err);
 			 					return;
 			 				};
-
+						*/
 							//console.log(metadataFeeditems);
 						metadataFeeditems.table.map(file=>{
 							if(file.metadata.categories){
