@@ -427,7 +427,7 @@ app.get('/updatedfeeds',cors(),function(req, res) {
 										return feed.pubdate >= req.query.date;
 									})
 								//	console.log("undefe",results.length);
-							if(results){
+							if(results.length > 0){
 								res.send(results);
 							} else {
 								res.send([]);
@@ -447,7 +447,7 @@ app.get('/updatedfeeds',cors(),function(req, res) {
 								})
 								console.log("cat",results.length);
 
-								if(results){
+								if(results.length > 0){
 									res.send(results);
 								} else {
 									res.send([]);
