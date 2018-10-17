@@ -400,9 +400,10 @@ app.get('/updatedfeeds',cors(),function(req, res) {
 										return feed.pubdate >= req.query.date;
 									})
 								//	console.log("undefe",results.length);
-								//reset the items array
-								file.items=[];
+								
 							 res.send(results);
+							 //reset the items array
+							 file.items=[];
 
 						}
 					}
@@ -414,9 +415,12 @@ app.get('/updatedfeeds',cors(),function(req, res) {
 									return feed.pubdate >= req.query.date;
 								})
 								console.log("cat",results.length);
-					   res.send(results);
-					   //reset the items array
-					   file.items=[];
+
+								res.send(results);
+								//reset the items array
+								file.items=[];
+					   			
+					   
 					}
 				}
 					//console.log("contents",file.metadata.categories[0],file.items.length)
