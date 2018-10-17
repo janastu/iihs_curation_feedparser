@@ -400,8 +400,12 @@ app.get('/updatedfeeds',cors(),function(req, res) {
 										return feed.pubdate >= req.query.date;
 									})
 								//	console.log("undefe",results.length);
-								
-							 res.send(results);
+							if(results){
+								res.send(results);
+							} else {
+								res.send([]);
+							}
+							 
 							 //reset the items array
 							 file.items=[];
 
@@ -416,7 +420,11 @@ app.get('/updatedfeeds',cors(),function(req, res) {
 								})
 								console.log("cat",results.length);
 
-								res.send(results);
+								if(results){
+									res.send(results);
+								} else {
+									res.send([]);
+								}
 								//reset the items array
 								file.items=[];
 					   			
