@@ -493,17 +493,28 @@ app.get('/first',cors(),function(req, res) {
 
 						 writeToFile('feeds.json', JSON.stringify(metadataFeeditems,null,1))
 						 			.then(function(result){
-						 				console.log("finished writing "+ (new Date).getTime() - startDate.getTime())
+						 				console.log("finished writing "+ (new Date).getTime() - startDate.getTime());
+
 
 						 			}).catch(function(err){
 						 				console.log("error here: " + err);
-						 			})
-				 		/* fs.writeFile('feeds.json', JSON.stringify(metadataFeeditems,null,1), 'utf8', (err) => {
+						 			});
+						 metadataFeeditems.table.map(file=>{
+						 	if(file.metadata.categories){
+						 		console.log("contents",file.metadata.categories[0],file.items.length)
+						 		if(meta.categories[0] == file.metadata.categories[0]){
+						 		res.send(file);
+						 		}
+						 		
+						 	}
+
+						 });
+				 		 /*fs.writeFile('feeds.json', JSON.stringify(metadataFeeditems,null,1), 'utf8', (err) => {
 			 				if (err) {
 			 					console.error(err);
 			 					return;
 			 				};
-						*/
+						
 							//console.log(metadataFeeditems);
 						metadataFeeditems.table.map(file=>{
 							if(file.metadata.categories){
@@ -515,7 +526,7 @@ app.get('/first',cors(),function(req, res) {
 							}
 
 						})
-				});
+				});*/
 			});
 
 			console.log((new Date).getTime()- startDate.getTime());
