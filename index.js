@@ -124,7 +124,15 @@ console.log('job1 status running', job1.running); // job1 status undefined
 function pullFeedsAndUpdate(callback) {
 	var feedstoUpdate;
 	var startDate = new Date;
-	var data = fs.readFileSync('feeds.json', 'utf-8');
+	var feedsFileStat = fs.statSync('feeds.json');
+	//if the file size is less than 100k -
+	// some corruption in read/write
+	if(feedsFileStat.size > 100){
+	  var data = fs.readFileSync('feeds.json', 'utf-8');
+	} else {
+	  var data = fs.readFileSync('feeds1.json', 'utf-8');
+	}
+	
 	//readFromFile('feeds.json').then(function (data) {
 	var cachedFeeds = JSON.parse(data);
 	var feedlink;
@@ -425,7 +433,15 @@ app.get('/updatedfeeds',cors(),function(req, res) {
 
 	var syncStatus;
 	var startDate = new Date;
-	var data = fs.readFileSync('feeds.json', 'utf-8');
+	var feedsFileStat = fs.statSync('feeds.json');
+	//if the file size is less than 100k -
+	// some corruption in read/write
+	if(feedsFileStat.size > 100){
+	  var data = fs.readFileSync('feeds.json', 'utf-8');
+	} else {
+	  var data = fs.readFileSync('feeds1.json', 'utf-8');
+	}
+	//var data = fs.readFileSync('feeds.json', 'utf-8');
 	//readFromFile('feeds.json').then(function(data) {
 			var cachedFeeds = JSON.parse(data);
 			console.log(cachedFeeds);
@@ -537,7 +553,15 @@ app.get('/first',cors(),function(req, res) {
 
 			console.log("no error");
 			var startDate = new Date;
-			var data = fs.readFileSync('feeds.json', 'utf-8');
+			var feedsFileStat = fs.statSync('feeds.json');
+			//if the file size is less than 100 -
+			// some corruption in read/write
+			if(feedsFileStat.size > 100){
+			  var data = fs.readFileSync('feeds.json', 'utf-8');
+			} else {
+			  var data = fs.readFileSync('feeds1.json', 'utf-8');
+			}
+			
 			//readFromFile('feeds.json').then(function(data) {
 				
 					//console.log(data);
