@@ -109,10 +109,10 @@ var job1 = new cron.CronJob({
   cronTime: '* */6 * * * *',
   onTick: function() {
   	//console.log('running every minute 1, 2, 4 and 5');
-    console.log('job 1 ticked');
-    	pullFeedsAndUpdate(function(err,response){
+    //console.log('job 1 ticked', new Date());
+    	/*pullFeedsAndUpdate(function(err,response){
     		//console.log('Response updated',response);
-    	});
+    	});*/
 
     },
   start: true	,
@@ -124,7 +124,8 @@ console.log('job1 status running', job1.running); // job1 status undefined
 function pullFeedsAndUpdate(callback) {
 	var feedstoUpdate;
 	var startDate = new Date;
-	fs.readFile('feeds.json', "utf8", (err, data) => {
+	var data = fs.readFileSync('feeds.json', 'utf-8');
+	//readFromFile('feeds.json').then(function (data) {
 	var cachedFeeds = JSON.parse(data);
 	var feedlink;
 	//console.log(cachedFeeds)
@@ -202,7 +203,9 @@ function pullFeedsAndUpdate(callback) {
 
 
 
-	});
+	//}).catch(function(err){
+	//	console.log("error here: " + err);
+	//});
 
 	console.log((new Date).getTime() - startDate.getTime());
 }
@@ -370,9 +373,23 @@ function differenceOfFeeds(feedsarray,feedItems) {
 
 }
 
+function readFromFile(filename){
+	console.log(filename);
+	return new Promise(function (resolve, reject) {
+		fs.readFileSync(filename); /*, "utf8", (err, data) => {
+			if (err) {
+				console.error(err);
+				reject(err);
+			} else {
+				resolve(data);
+			}
+		});*/
+	});
+}
+
 function writeToFile(filename, payload){
-	return new Promise(function(resolve, reject) {
-		 fs.writeFile(filename, payload, 'utf8', (err) => {
+	return new Promise(function (resolve, reject) {
+		 fs.writeFileSync(filename, payload, 'utf8', (err) => {
 			if (err) {
 				console.error(err);
 				reject(err);
@@ -408,7 +425,8 @@ app.get('/updatedfeeds',cors(),function(req, res) {
 
 	var syncStatus;
 	var startDate = new Date;
-	fs.readFile('feeds.json', "utf8", (err, data) => {
+	var data = fs.readFileSync('feeds.json', 'utf-8');
+	//readFromFile('feeds.json').then(function(data) {
 			var cachedFeeds = JSON.parse(data);
 			console.log(cachedFeeds);
 			//res.send(cachedFeeds);
@@ -471,20 +489,16 @@ app.get('/updatedfeeds',cors(),function(req, res) {
 			
 			writeToFile('feeds.json', JSON.stringify(cachedFeeds,null,1))
 						.then(function(result){
-							console.log("finished writing "+ (new Date).getTime() - startDate.getTime())
+							console.log("finished writing "+ ((new Date).getTime() - startDate.getTime()));
 
 						}).catch(function(err){
 							console.log("error here: " + err);
-						})
+						});
 
-	 		/* fs.writeFile('feeds.json', JSON.stringify(cachedFeeds,null,1), 'utf8', (err) => {
- 				if (err) {
- 					console.error(err);
- 					return;
- 				};
-			});*/
 		
-	});
+	//}).catch(function(err){
+	//	console.log("error here: " + err);
+	//});
 	console.log((new Date).getTime() - startDate.getTime());
 	/*getUsersSubscriptionsLinks(function(err,response){
 		console.log(response);
@@ -521,18 +535,18 @@ app.get('/first',cors(),function(req, res) {
 
 			//console.log(feedItems.length);
 
-			//
+			console.log("no error");
 			var startDate = new Date;
-			
-			fs.readFile('feeds.json', "utf8", (err, data) => {
-					if (err) throw err;
+			var data = fs.readFileSync('feeds.json', 'utf-8');
+			//readFromFile('feeds.json').then(function(data) {
+				
 					//console.log(data);
 					metadataFeeditems = JSON.parse(data);
 						 metadataFeeditems.table.push({'metadata':meta,'items':feedItems})
 
 						 writeToFile('feeds.json', JSON.stringify(metadataFeeditems,null,1))
 						 			.then(function(result){
-						 				console.log("finished writing "+ (new Date).getTime() - startDate.getTime());
+						 				console.log("finished writing "+ ((new Date).getTime() - startDate.getTime()));
 
 
 						 			}).catch(function(err){
@@ -566,7 +580,9 @@ app.get('/first',cors(),function(req, res) {
 
 						})
 				});*/
-			});
+			//}).catch(function(err){
+			//	console.log("error here: " + err);
+			//});
 
 			console.log((new Date).getTime()- startDate.getTime());
 
