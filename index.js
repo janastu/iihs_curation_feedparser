@@ -109,10 +109,15 @@ var job1 = new cron.CronJob({
   cronTime: '* */6 * * * *',
   onTick: function() {
   	//console.log('running every minute 1, 2, 4 and 5');
-    //console.log('job 1 ticked', new Date());
-    	/*pullFeedsAndUpdate(function(err,response){
-    		//console.log('Response updated',response);
-    	});*/
+    console.log('job 1 ticked', new Date());
+    	pullFeedsAndUpdate(function(err,response){
+    		if(!err){
+    			console.log('Response updated',response);
+    		} else {
+    			console.log("error in cron:", err);
+    		}
+    		
+    	});
 
     },
   start: true	,
